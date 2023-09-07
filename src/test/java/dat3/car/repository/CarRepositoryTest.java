@@ -10,29 +10,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class CarRepositoryTest {
+
     @Autowired
     CarRepository carRepository;
-    Boolean isInitialized = false;
-
+    boolean dataInitialized = false;
+    int car1Id, car2Id;
     @BeforeEach
     void setUp() {
-        if(!isInitialized){
-            carRepository.save(new Car("Ford", "Mustang", 250, 25));
-            carRepository.save(new Car("Ford", "Fiesta", 150, 20));
-            carRepository.save(new Car("Ford", "Focus", 200, 22));
-            carRepository.save(new Car("Ford", "Mondeo", 300, 30));
-            carRepository.save(new Car("Ford", "GT", 350, 35));
-            carRepository.save(new Car("Ford", "Ranger", 250, 25));
-            carRepository.save(new Car("Ford", "Explorer", 200, 20));
-            carRepository.save(new Car("Ford", "F-150", 300, 30));
-            isInitialized = true;
+        if(!dataInitialized){
+            Car car1 = carRepository.save(new Car("Volvo","V70",1999,20));
+            car1Id = car1.getId();
+            Car car2 = carRepository.save(new Car("XXX","YYY",100,20));
+            car2Id = car2.getId();
         }
     }
 
     @Test
-    public void deleteAll(){
-        carRepository.deleteAll();
-        Long count = carRepository.count();
-        assertEquals(0,count);
+    public void testById() {
+        Car car1 = carRepository.findById(car1Id).get();
+        assertEquals("Volvo", car1.getBrand());
+    }
+    @Test
+    public void testCount() {
+        assertEquals(2, carRepository.count());
+    }
+    @Test
+    public void testGetByBrand() {
+        assertEquals(1, carRepository.getByBrand("Volvo").size());
     }
 }
